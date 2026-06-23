@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>패혈성 쇼크 약물 가이드</title>
+<style>
+  :root{--bg:#f7f7f5;--card:#ffffff;--card2:#f1efe8;--line:rgba(0,0,0,.12);--tx:#1a1a18;--tx2:#5f5e5a;--info-bg:#e6f1fb;--info-tx:#0c447c;--info-line:#85b7eb;--warn-bg:#fbeee6;--warn-tx:#8a4b1e;--ok-bg:#e7f3ec;--ok-tx:#1e6b3e;--radius:12px;}
+  @media (prefers-color-scheme: dark){:root{--bg:#1c1c1a;--card:#262624;--card2:#2c2c2a;--line:rgba(255,255,255,.14);--tx:#f1efe8;--tx2:#b4b2a9;--info-bg:#0c447c40;--info-tx:#b5d4f4;--info-line:#185fa5;--warn-bg:#5a3a1e40;--warn-tx:#e8b98a;--ok-bg:#1e4d3340;--ok-tx:#8fd6aa;}body{background:#1c1c1a !important;}}
+  *{box-sizing:border-box;}
+  body{margin:0;padding:24px 16px;background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:780px;margin:0 auto;}
+  h1{font-size:21px;font-weight:600;margin:0 0 4px;}
+  .sub{font-size:13px;color:var(--tx2);margin:0 0 18px;}
+  .maintab{display:flex;gap:6px;margin-bottom:22px;}
+  .maintab button{flex:1;font-family:inherit;cursor:pointer;background:var(--card);color:var(--tx);border:.5px solid var(--line);border-radius:10px;padding:11px;font-size:14px;font-weight:500;}
+  .maintab button.active{background:var(--info-bg);color:var(--info-tx);border-color:var(--info-line);font-weight:600;}
+  .view{display:none;}
+  .view.active{display:block;}
+  button{font-family:inherit;cursor:pointer;background:var(--card);color:var(--tx);border:.5px solid var(--line);border-radius:8px;padding:6px 14px;font-size:13px;transition:transform .08s;}
+  button:active{transform:scale(.97);}
+  button.active{background:var(--info-bg);color:var(--info-tx);border-color:var(--info-line);font-weight:600;}
+  .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;}
+  .panel{background:var(--card2);border-radius:var(--radius);padding:16px 20px;margin-bottom:16px;}
+  .row{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;}
+  .row:last-child{margin-bottom:0;}
+  label{font-size:14px;color:var(--tx2);min-width:84px;}
+  select,input[type=number]{font-family:inherit;font-size:15px;padding:8px 10px;border:.5px solid var(--line);border-radius:8px;background:var(--card);color:var(--tx);}
+  select{flex:1;}
+  input[type=range]{flex:1;accent-color:#185fa5;}
+  .conc{font-size:13px;color:var(--tx2);margin-bottom:6px;}
+  .spec{font-size:12px;color:var(--tx2);margin-bottom:14px;}
+  .badge{display:inline-block;font-size:11px;padding:1px 7px;border-radius:6px;background:var(--info-bg);color:var(--info-tx);margin-left:6px;}
+  .mix{background:var(--card);border:.5px solid var(--line);border-radius:8px;padding:12px 14px;margin-bottom:14px;}
+  .mtitle{font-size:12px;color:var(--tx2);margin-bottom:8px;}
+  .amp-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+  .amp-row .x{font-size:14px;color:var(--tx2);}
+  .amp-row input{width:64px;}
+  .amp-row .eq{font-size:14px;color:var(--tx2);margin-left:auto;}
+  .fluid-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+  .fluid-chips button{font-size:12px;padding:4px 10px;}
+  .tot-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .tot-row label{min-width:auto;font-size:13px;}
+  .tot-row input{width:88px;}
+  .units-label{font-size:12px;color:var(--tx2);margin-bottom:6px;}
+  .units{display:flex;flex-wrap:wrap;gap:6px;}
+  .units button{font-size:12px;padding:5px 9px;}
+  .conv{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;background:var(--card);border:.5px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:20px;}
+  .conv .field{display:flex;flex-direction:column;gap:6px;}
+  .conv .field .flbl{font-size:12px;color:var(--tx2);}
+  .conv .field input{width:100%;font-size:18px;font-weight:600;text-align:center;}
+  .conv .field .u{font-size:11px;color:var(--tx2);text-align:center;}
+  .conv .swap{font-size:22px;color:var(--tx2);text-align:center;}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px;}
+  .sm{background:var(--card2);border-radius:8px;padding:16px;}
+  .sm .lbl{font-size:13px;color:var(--tx2);margin:0 0 4px;}
+  .sm .val{font-size:20px;font-weight:600;margin:0;}
+  .sm .val small{font-size:13px;color:var(--tx2);font-weight:400;}
+  .note{font-size:13px;color:var(--tx2);}
+  .tip{font-size:12px;color:var(--tx2);background:var(--card);border:.5px solid var(--line);border-radius:8px;padding:10px 12px;margin-top:10px;}
+  .seg{display:flex;gap:6px;}
+  .seg button{padding:7px 16px;font-size:13px;}
+  .mode{display:flex;gap:6px;margin-bottom:16px;}
+  .mode button{flex:1;padding:9px;font-size:14px;}
+  .result{background:var(--info-bg);border-radius:var(--radius);padding:18px 20px;margin-bottom:20px;}
+  .result .lbl{font-size:13px;color:var(--info-tx);margin:0 0 4px;}
+  .result .val{font-size:30px;font-weight:600;color:var(--info-tx);margin:0;}
+  .result .val small{font-size:15px;}
+  .band{font-size:13px;color:var(--info-tx);margin-top:6px;}
+  h2{font-size:16px;font-weight:600;margin:24px 0 6px;}
+  .ind-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;}
+  .ind-row label{min-width:auto;}
+  table{width:100%;border-collapse:collapse;font-size:13px;background:var(--card);border-radius:8px;overflow:hidden;}
+  th,td{text-align:left;padding:8px 10px;border-bottom:.5px solid var(--line);vertical-align:top;}
+  th{background:var(--card2);font-weight:600;font-size:12px;}
+  td.drug{font-weight:600;white-space:nowrap;}
+  tr.grp td{background:var(--card2);font-weight:600;font-size:12px;color:var(--tx2);padding:6px 10px;}
+  .chip{display:inline-block;margin:2px 6px 2px 0;padding:3px 7px;border-radius:6px;font-size:12px;background:var(--card2);}
+  .chip.hit{background:var(--info-bg);outline:2px solid var(--info-line);font-weight:600;}
+  .chip .c{color:var(--tx2);}
+  .noadj{display:inline-block;font-size:11px;padding:2px 8px;border-radius:6px;background:var(--ok-bg);color:var(--ok-tx);}
+  .warn{background:var(--warn-bg);color:var(--warn-tx);border-radius:8px;padding:12px 14px;font-size:13px;margin:14px 0;}
+  .disclaimer{font-size:12px;color:var(--tx2);margin-top:24px;padding-top:16px;border-top:.5px solid var(--line);}
+  .refs{font-size:12px;color:var(--tx2);margin-top:10px;}
+  .refs b{color:var(--tx);}
+  .scroll{overflow-x:auto;}
+  b{font-weight:600;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>패혈성 쇼크 약물 가이드</h1>
+  <p class="sub">승압제·진정·진통 주입 변환 · 신기능 계산 · 항생제 용량 조절</p>
+
+  <div class="maintab">
+    <button id="t-drug" class="active">약물 주입 변환</button>
+    <button id="t-renal">신기능·항생제</button>
+  </div>
+
+  <!-- ===== VIEW 1: 약물 변환 ===== -->
+  <div class="view active" id="view-drug">
+    <div class="tabs" id="cat-tabs"></div>
+    <div class="panel">
+      <div class="row"><select id="drug"></select></div>
+      <div class="conc" id="conc-info"></div>
+      <div class="spec" id="spec-info"></div>
+      <div class="mix">
+        <div class="mtitle">믹스 조성</div>
+        <div class="amp-row" id="amp-row">
+          <label style="min-width:auto;font-size:13px;">앰플</label>
+          <input type="number" id="amp-each" step="any"><span style="font-size:12px;color:var(--tx2);" id="amp-unit">mg</span>
+          <span class="x">×</span>
+          <input type="number" id="amp-cnt" step="1" min="1"><span style="font-size:12px;color:var(--tx2);">개</span>
+          <span class="eq" id="amp-eq"></span>
+        </div>
+        <div class="mtitle">희석 수액 (총량)</div>
+        <div class="fluid-chips" id="fluid-chips"></div>
+        <div class="tot-row">
+          <label>총 약물량(mg)</label><input type="number" id="amt-num" step="any">
+          <label>총량(cc)</label><input type="number" id="vol-num" step="any">
+        </div>
+      </div>
+      <div class="row">
+        <label>체중 (kg)</label>
+        <input type="range" id="wt" min="2" max="120" value="60" step="1">
+        <input type="number" id="wt-num" value="60" step="0.5" style="width:90px;">
+      </div>
+      <div class="units-label">투여 단위 선택</div>
+      <div class="units" id="unit-row"></div>
+    </div>
+    <div class="conv">
+      <div class="field"><span class="flbl">용량 / 속도</span><input type="number" id="dose-in" value="5" step="0.01"><span class="u" id="dose-unit">mcg/kg/min</span></div>
+      <div class="swap">⇄</div>
+      <div class="field"><span class="flbl">투여 속도</span><input type="number" id="cc-in" value="0" step="0.01"><span class="u">cc/hr</span></div>
+    </div>
+    <div class="cards">
+      <div class="sm" id="mg-card"><p class="lbl">시간당 약물량</p><p class="val"><span id="mg-out">0</span> <small>mg/hr</small></p></div>
+      <div class="sm"><p class="lbl">시간당 용량</p><p class="val"><span id="dim-out">0</span> <small>mcg/hr</small></p></div>
+    </div>
+    <div class="note" id="range-note"></div>
+    <div class="tip" id="tip"></div>
+    <p class="disclaimer">
+      본 도구는 참고용입니다. 실제 투여는 반드시 처방·기관 프로토콜·약제 라벨을 확인하십시오. A=앰플, V=바이알, Bag=프리믹스. 앰플 용량×개수 또는 총 약물량을 직접 입력하면 농도가 재계산됩니다.
+      <span class="refs"><br><b>참고:</b> 약물 농도·믹스는 사용자 제공 ICU 약물 표 기준. 권장 용량 범위는 UpToDate (Lexicomp drug information) 및 일반 ICU 약물 참고서 기준.</span>
+    </p>
+  </div>
+
+  <!-- ===== VIEW 2: 신기능·항생제 ===== -->
+  <div class="view" id="view-renal">
+    <div class="mode">
+      <button id="m-calc" class="active">CrCl 계산</button>
+      <button id="m-egfr">eGFR 직접 입력</button>
+    </div>
+    <div class="panel" id="panel-calc">
+      <div class="row"><label>성별</label><div class="seg" id="sex"><button data-v="M" class="active">남</button><button data-v="F">여</button></div></div>
+      <div class="row"><label>나이 (세)</label><input type="number" id="age" value="65" min="1" max="120" style="width:110px;"><label style="min-width:auto;">체중 (kg)</label><input type="number" id="r-wt" value="60" min="1" step="0.5" style="width:110px;"></div>
+      <div class="row"><label>크레아티닌</label><input type="number" id="cr" value="1.0" min="0.1" step="0.1" style="width:110px;"><span style="font-size:13px;color:var(--tx2);">mg/dL</span></div>
+    </div>
+    <div class="panel" id="panel-egfr" style="display:none;">
+      <div class="row"><label>eGFR / CrCl</label><input type="number" id="egfr" value="60" min="0" step="1" style="width:110px;"><span style="font-size:13px;color:var(--tx2);">mL/min</span></div>
+      <p style="font-size:12px;color:var(--tx2);margin:0;">검사실 보고값(MDRD/CKD-EPI eGFR) 또는 별도 계산한 CrCl을 직접 입력하세요.</p>
+    </div>
+    <div class="result"><p class="lbl" id="res-lbl">추정 크레아티닌 청소율 (Cockcroft-Gault)</p><p class="val"><span id="crcl">—</span> <small>mL/min</small></p><p class="band" id="band"></p></div>
+
+    <h2>주요 항생제 신기능별 용량 (정맥주사)</h2>
+    <div class="ind-row">
+      <label>적응증/중증도</label>
+      <select id="severity"><option value="general">일반 / 경증</option><option value="severe">중증 / 특수</option></select>
+      <span style="font-size:12px;color:var(--tx2);">현재 신기능 구간이 파란색으로 강조됩니다.</span>
+    </div>
+    <div class="scroll"><table id="abx"></table></div>
+    <div class="warn"><b>Vancomycin·아미노글리코사이드(amikacin, gentamicin)</b>는 단순 CrCl 표가 아니라 혈중 농도 모니터링(TDM)·AUC 기반으로 용량을 정합니다. 약제팀/ID 협진으로 관리하세요.</div>
+    <p class="disclaimer">
+      본 도구는 참고용입니다. 실제 처방은 기관 내규·약제팀·감염내과 협진과 최신 라벨을 확인하십시오. CrCl = [(140 − 나이) × 체중] ÷ (72 × Cr), 여성 ×0.85. 비만 시 보정체중 권장(본 계산기는 입력 체중 그대로 사용).
+      <span class="refs"><br><b>항생제 용량 출처:</b> Stanford Health Care Antimicrobial Dosing Reference Guide, Antimicrobial Stewardship Program (ABX Subcommittee 승인 2026년 2월). <b>신기능 계산식:</b> Cockcroft DW, Gault MH. Nephron. 1976;16(1):31-41. "신기능 조절 불필요"는 주로 간/담즙 배설 약물에 해당.</span>
+    </p>
+  </div>
+</div>
+
+<script>
+const DRUGS=[
+  {cat:"승압/강심",n:"Perdipine",amt:50,vol:500,amp:10.0,kind:"A",cnt:5,spec:"10mg/10ml/A",defUnit:"mg/hr",min:3,max:15,note:"3-15 mg/hr"},
+  {cat:"승압/강심",n:"Betasin",amt:500,vol:500,amp:null,kind:"Bag",cnt:1,spec:"",defUnit:"mg/hr",min:0,max:0,note:"메모 참조"},
+  {cat:"승압/강심",n:"Epinephrine",amt:2,vol:100,amp:1.0,kind:"A",cnt:2,spec:"1mg/1ml/A",defUnit:"mcg/kg/min",min:0.1,max:0.5,note:"0.1-0.5 mcg/kg/min (CPR, 저혈압)"},
+  {cat:"승압/강심",n:"Norpinephrine",amt:40,vol:500,amp:4.0,kind:"A",cnt:10,spec:"4mg/4ml/A · 20mg/20ml/A",defUnit:"mcg/kg/min",min:0.01,max:3,note:"0.01-3 mcg/kg/min (shock)"},
+  {cat:"승압/강심",n:"Norpinephrine(심)",amt:32,vol:500,amp:4.0,kind:"A",cnt:8,spec:"4mg/4ml/A · 20mg/20ml/A",defUnit:"mcg/kg/min",min:0.1,max:0.5,note:"0.1-0.5 mcg/kg/min (CPR)"},
+  {cat:"승압/강심",n:"Vasopressin",amt:60,vol:500,amp:20.0,kind:"A",cnt:3,spec:"20U/1ml/A",defUnit:"U/min",min:0.01,max:0.07,note:"0.01-0.07 U/min",unitVal:"U"},
+  {cat:"승압/강심",n:"Dopamine",amt:400,vol:200,amp:null,kind:"Bag",cnt:1,spec:"400mg/200ml/Bag",defUnit:"mcg/kg/min",min:0,max:20,note:"용량별 효과 상이 (프리믹스)"},
+  {cat:"승압/강심",n:"Dobutamine",amt:500,vol:250,amp:null,kind:"Bag",cnt:1,spec:"500mg/250ml/Bag",defUnit:"mcg/kg/min",min:0.5,max:40,note:"0.5-40 mcg/kg/min (프리믹스)"},
+  {cat:"진정제",n:"Ketamine",amt:500,vol:100,amp:500.0,kind:"V",cnt:1,spec:"500mg/10ml/V",defUnit:"mcg/kg/min",min:5,max:20,note:"5-20 mcg/kg/min"},
+  {cat:"진정제",n:"Midazolam",amt:60,vol:100,amp:15.0,kind:"A",cnt:4,spec:"15mg/3ml/A",defUnit:"mg/kg/hr",min:0.3,max:1.67,note:"0.3-1.67 mg/kg/hr"},
+  {cat:"진정제",n:"Precedex",amt:0.4,vol:100,amp:0.2,kind:"V",cnt:2,spec:"200mcg/2ml/V",defUnit:"mcg/kg/hr",min:0.2,max:0.7,note:"0.2-0.7 mcg/kg/hr"},
+  {cat:"진정제",n:"Fresofol",amt:1000,vol:50,amp:1000.0,kind:"V",cnt:1,spec:"2%1000mg/50ml/V",defUnit:"mcg/kg/min",min:5,max:80,note:"5-80 mcg/kg/min"},
+  {cat:"진통제",n:"Alfentanil",amt:10,vol:100,amp:2.5,kind:"A",cnt:4,spec:"2.5mg/5ml/A",defUnit:"cc/hr",min:10,max:144,note:"10-144 cc/hr"},
+  {cat:"진통제",n:"Fentanyl",amt:1,vol:100,amp:1.0,kind:"A",cnt:1,spec:"1mg/20ml/A",defUnit:"mcg/hr",min:40,max:600,note:"40-600 mcg/hr = 4-60 cc/hr"},
+  {cat:"진통제",n:"Morphine",amt:20,vol:500,amp:5.0,kind:"A",cnt:4,spec:"5mg/5ml/A",defUnit:"mg/hr",min:2,max:30,note:"2-30 mg/hr (single 기준)"},
+  {cat:"진통제",n:"Remifentanil",amt:2,vol:100,amp:1.0,kind:"V",cnt:2,spec:"1mg/ml/V",defUnit:"mcg/hr",min:30,max:900,note:"30-900 mcg/hr = 1.5-45 cc/hr"},
+  {cat:"진통제",n:"Sufentanil",amt:0.25,vol:100,amp:0.25,kind:"A",cnt:1,spec:"250mcg/5ml/A",defUnit:"mcg/kg/hr",min:0.3,max:0.9,note:"0.3-0.9 mcg/kg/hr"},
+  {cat:"근이완제",n:"Vecaron",amt:10,vol:100,amp:10.0,kind:"V",cnt:1,spec:"4 or 10mg/V",defUnit:"mcg/kg/min",min:0.8,max:1.7,note:"0.8-1.7 mcg/kg/min"},
+  {cat:"근이완제",n:"Esmeron",amt:50,vol:100,amp:50.0,kind:"V",cnt:1,spec:"50mg/5ml/V",defUnit:"mcg/kg/min",min:8,max:12,note:"8-12 mcg/kg/min"},
+  {cat:"근이완제",n:"Atracurium",amt:25,vol:100,amp:25.0,kind:"A",cnt:1,spec:"25mg/2.5ml/A",defUnit:"mcg/kg/min",min:4,max:20,note:"4-20 mcg/kg/min"},
+  {cat:"근이완제",n:"Nimbex",amt:20,vol:100,amp:20.0,kind:"A",cnt:1,spec:"20mg/10ml/A",defUnit:"mcg/kg/min",min:0.5,max:10,note:"0.5-10 mcg/kg/min"},
+];
+
+const ABX=[
+  {grp:"페니실린계", n:"Ampicillin/sulbactam",gLbl:"경증",sLbl:"전신/A.baumannii",cols:[">30","15–30","<15","HD"],cut:[[30,1e9],[15,30],[0,15]],general:["1.5g q6h","1.5g q12h","1.5g q24h","1.5g q24h"],severe:["3g q6h","3g q12h","3g q24h","3g q24h"]},
+  {grp:"페니실린계", n:"Piperacillin/tazobactam",gLbl:"일반(연장주입)",sLbl:"중증/MIC=16",cols:[">40","20–40","<20 / HD"],cut:[[40,1e9],[20,40],[0,20]],general:["4.5g q8h","3.375g q8h","4.5g q12h"],severe:["4.5g q6h","4.5g q8h","4.5g q12h"]},
+  {grp:"세파 1세대", n:"Cefazolin",gLbl:"경증",sLbl:"중등도/중증",cols:[">30","10–30","<10","HD"],cut:[[30,1e9],[10,30],[0,10]],general:["1g q8h","1g q12h","1g q24h","1g q24h(HD후)"],severe:["2g q8h","2g q12h","2g q24h","2g q12h"]},
+  {grp:"세파 3세대", n:"Ceftriaxone",noAdj:true,gLbl:"일반",sLbl:"수막염",general:["1–2g q24h"],severe:["2g q12h"]},
+  {grp:"세파 3세대", n:"Cefotaxime",gLbl:"일반",sLbl:"중증/수막염",cols:[">50","10–50","<10","HD"],cut:[[50,1e9],[10,50],[0,10]],general:["1–2g q8h","1–2g q12h","1–2g q24h","1–2g q24h(HD후)"],severe:["2g q4–6h","2g q8–12h","2g q24h","2g q24h"]},
+  {grp:"세파 3세대", n:"Ceftazidime",gLbl:"일반",sLbl:"중증",cols:[">50","30–50","16–30","<16","HD"],cut:[[50,1e9],[30,50],[16,30],[0,16]],general:["1–2g q8h","1–2g q12h","1–2g q24h","0.5–1g q24h","0.5–1g q24h(HD후)"],severe:["2g q8h","1–2g q12h","1–2g q24h","0.5–1g q24h","0.5–1g q24h(HD후)"]},
+  {grp:"세파 4세대", n:"Cefepime",gLbl:"일반",sLbl:"폐렴/FN/녹농균/CNS",cols:[">60","30–60","11–29","<10","HD"],cut:[[60,1e9],[30,60],[11,30],[0,11]],general:["1g q8h / 2g q12h","1g q12h / 2g q24h","1g q24h","500mg q24h","0.5–1g q24h(HD후)"],severe:["2g q8h","2g q12h","1g q12h","1g q24h","2g post-HD"]},
+  {grp:"카바페넴", n:"Meropenem",gLbl:"일반(FN/PNA/녹농균)",sLbl:"CF/CNS",cols:[">50","26–50","10–25","<10","HD"],cut:[[50,1e9],[26,50],[10,26],[0,10]],general:["1g q8h","1g q12h","0.5g q12h","0.5g q24h","500mg q24h(HD후)"],severe:["2g q8h","2g q12h","1g q12h","1g q24h","1g q24h(HD후)"]},
+  {grp:"카바페넴", n:"Imipenem/cilastatin",gLbl:"일반",sLbl:"NTM",cols:[">60","30–59","15–29","<15"],cut:[[60,1e9],[30,60],[15,30],[0,15]],general:["500mg q6h / 1g q8h","500mg q8h","500mg q12h","투석 전 비권장"],severe:["1g q12h","750mg q12h","500mg q12h","투석 전 비권장"]},
+  {grp:"카바페넴", n:"Ertapenem",gLbl:"일반",sLbl:"—",cols:[">30","≤30","HD"],cut:[[30,1e9],[0,30]],general:["1g q24h","500mg q24h","500mg q24h(HD후)"],severe:["1g q24h","500mg q24h","500mg q24h(HD후)"]},
+  {grp:"모노박탐", n:"Aztreonam",gLbl:"일반",sLbl:"중증/수막염",cols:[">30","<30","<10","HD"],cut:[[30,1e9],[10,30],[0,10]],general:["1–2g q8h","1g q8h","1g q24h","1g q24h"],severe:["2g q6–8h","1g q6–8h","1g q12h","1g q12h"]},
+  {grp:"퀴놀론", n:"Ciprofloxacin",gLbl:"일반",sLbl:"녹농균/중증",cols:[">50","30–50","<30","HD"],cut:[[50,1e9],[30,50],[0,30]],general:["400mg q12h","400mg q12h","400mg q24h","q24h(HD후)"],severe:["400mg q8h","400mg q8–12h","400mg q24h","400mg q24h"]},
+  {grp:"퀴놀론", n:"Levofloxacin",gLbl:"경~중등(DFI)",sLbl:"중증/폐렴/UTI",cols:["≥50","20–49","<20","HD"],cut:[[50,1e9],[20,50],[0,20]],general:["500mg q24h","500mg→250mg q24h","500mg→250mg q48h","q48h(HD후)"],severe:["750mg q24h","750mg q48h","750mg→500mg q48h","q48h(HD후)"]},
+  {grp:"퀴놀론", n:"Moxifloxacin",noAdj:true,gLbl:"일반",sLbl:"중증",general:["400mg q24h"],severe:["400mg q24h"]},
+  {grp:"기타", n:"Metronidazole",noAdj:true,gLbl:"혐기성",sLbl:"중증",general:["500mg q8h"],severe:["500mg q6–8h"]},
+  {grp:"기타", n:"Clindamycin",noAdj:true,gLbl:"일반",sLbl:"중증",general:["600mg q8h"],severe:["900mg q8h"]},
+  {grp:"기타", n:"Azithromycin",noAdj:true,gLbl:"일반",sLbl:"—",general:["500mg q24h"],severe:["500mg q24h"]},
+  {grp:"항진균", n:"Fluconazole",gLbl:"식도/골관절 칸디다",sLbl:"중증 칸디다혈증 등",cols:[">50","≤50","HD"],cut:[[50,1e9],[0,50]],general:["400부하→200mg q24h","400부하→200mg q24h","200mg q24h(HD후)"],severe:["800부하→400–800mg q24h","800부하→200–400mg q24h","400–800mg post-HD"]},
+];
+
+const $=id=>document.getElementById(id);
+
+/* ===== 메인 탭 전환 ===== */
+$("t-drug").onclick=()=>{$("t-drug").classList.add("active");$("t-renal").classList.remove("active");$("view-drug").classList.add("active");$("view-renal").classList.remove("active");};
+$("t-renal").onclick=()=>{$("t-renal").classList.add("active");$("t-drug").classList.remove("active");$("view-renal").classList.add("active");$("view-drug").classList.remove("active");};
+
+/* ===== 약물 변환기 ===== */
+const CATS=["승압/강심","진정제","진통제","근이완제"];
+const UNITS=["mcg/kg/min","mcg/kg/hr","mg/kg/hr","mcg/hr","mg/hr","cc/hr"];
+const FLUIDS=[50,100,250,500,1000];
+const KIND={A:"앰플",V:"바이알",Bag:"프리믹스"};
+let curCat=CATS[0],cur=DRUGS[0],curUnit=cur.defUnit,mixAmt=cur.amt,mixVol=cur.vol,ampEach=cur.amp,ampCnt=cur.cnt;
+const conc=()=>mixAmt/mixVol;
+const isU=()=>cur.unitVal==="U";
+const uLbl=()=>isU()?"U":"mg";
+const fmt=v=>Math.abs(v)<10?(+v).toFixed(2):(+v).toFixed(1);
+const fmtMg=v=>Math.abs(v)<1?(+v).toFixed(3):(+v).toFixed(2);
+function doseToMgHr(u,d,wt){if(u==="mcg/kg/min")return d*wt*60/1000;if(u==="mcg/kg/hr")return d*wt/1000;if(u==="mg/kg/hr")return d*wt;if(u==="mcg/hr")return d/1000;if(u==="mg/hr")return d;if(u==="cc/hr")return d*conc();return 0;}
+function mgHrToDose(u,mg,wt){if(u==="mcg/kg/min")return mg*1000/(wt*60);if(u==="mcg/kg/hr")return mg*1000/wt;if(u==="mg/kg/hr")return mg/wt;if(u==="mcg/hr")return mg*1000;if(u==="mg/hr")return mg;if(u==="cc/hr")return mg/conc();return 0;}
+function buildTabs(){const t=$("cat-tabs");t.innerHTML="";CATS.forEach(c=>{const b=document.createElement("button");b.textContent=c;if(c===curCat)b.className="active";b.onclick=()=>{curCat=c;cur=DRUGS.find(d=>d.cat===c);selectDrug();buildTabs();buildDrugs();};t.appendChild(b);});}
+function buildDrugs(){const s=$("drug");s.innerHTML="";DRUGS.filter(d=>d.cat===curCat).forEach(d=>{const o=document.createElement("option");o.value=d.n;o.textContent=d.n;s.appendChild(o);});s.value=cur.n;}
+function buildFluids(){const r=$("fluid-chips");r.innerHTML="";FLUIDS.forEach(f=>{const b=document.createElement("button");b.textContent=f+" cc";if(f===mixVol)b.className="active";b.onclick=()=>{mixVol=f;$("vol-num").value=f;buildFluids();fromDose();};r.appendChild(b);});}
+function buildUnits(){const r=$("unit-row");r.innerHTML="";const opts=isU()?["U/min","cc/hr"]:UNITS;opts.forEach(u=>{const b=document.createElement("button");b.textContent=u;if(u===curUnit)b.className="active";b.onclick=()=>{curUnit=u;buildUnits();$("dose-unit").textContent=u;fromCc();};r.appendChild(b);});$("dose-unit").textContent=curUnit;}
+function syncAmpToTotal(){if(ampEach){mixAmt=ampEach*ampCnt;$("amt-num").value=+mixAmt.toFixed(3);}}
+function refreshAmpEq(){$("amp-unit").textContent=uLbl();if(cur.kind==="Bag"||!ampEach){$("amp-row").style.opacity=.4;$("amp-eq").textContent="(프리믹스)";}else{$("amp-row").style.opacity=1;$("amp-eq").textContent="= "+(+mixAmt.toFixed(2))+" "+uLbl();}}
+function selectDrug(){curUnit=cur.defUnit;mixAmt=cur.amt;mixVol=cur.vol;ampEach=cur.amp;ampCnt=cur.cnt;$("amp-each").value=ampEach!=null?ampEach:"";$("amp-cnt").value=ampCnt;$("amt-num").value=mixAmt;$("vol-num").value=mixVol;$("dose-in").value=cur.min;$("spec-info").innerHTML="규격: <b>"+(cur.spec||"—")+"</b><span class='badge'>"+KIND[cur.kind]+"</span>";buildUnits();buildFluids();refreshAmpEq();fromDose();}
+function paint(){const wt=+$("wt-num").value||0;const c=conc();$("conc-info").innerHTML="농도: <b>"+(+mixAmt.toFixed(2))+" "+uLbl()+" / "+mixVol+" cc</b> ("+(c<0.1?c.toFixed(4):c.toFixed(2))+" "+uLbl()+"/cc) · 권장: "+cur.note;refreshAmpEq();if(isU()){$("mg-card").style.opacity=.4;$("mg-out").textContent="—";$("dim-out").textContent="—";$("range-note").textContent="Vasopressin은 단위(U) 기반입니다. (mcg/kg/min=U/min 환산 시 체중 1000kg 사용)";return;}$("mg-card").style.opacity=1;const mg=doseToMgHr(curUnit,+$("dose-in").value||0,wt);$("mg-out").textContent=fmtMg(mg);$("dim-out").textContent=fmt(mg*1000);const lo=mgHrToDose("cc/hr",doseToMgHr(cur.defUnit,cur.min,wt),wt),hi=mgHrToDose("cc/hr",doseToMgHr(cur.defUnit,cur.max,wt),wt);$("range-note").innerHTML="권장 ("+cur.note+") → "+wt+"kg · "+mixVol+"cc 믹스 기준 <b>"+fmt(lo)+" ~ "+fmt(hi)+" cc/hr</b>";}
+function fromDose(){const wt=+$("wt-num").value||0;const mg=doseToMgHr(curUnit,+$("dose-in").value||0,wt);$("cc-in").value=(mg/conc()).toFixed(2);paint();}
+function fromCc(){const wt=+$("wt-num").value||0;const mg=(+$("cc-in").value||0)*conc();$("dose-in").value=mgHrToDose(curUnit,mg,wt).toFixed(curUnit.includes("mcg/kg")?3:2);paint();}
+$("drug").onchange=e=>{cur=DRUGS.find(d=>d.n===e.target.value);selectDrug();};
+$("wt").oninput=e=>{$("wt-num").value=e.target.value;fromDose();};
+$("wt-num").oninput=e=>{let v=+e.target.value;if(v>=2&&v<=120)$("wt").value=v;fromDose();};
+$("amp-each").oninput=e=>{ampEach=+e.target.value||0;syncAmpToTotal();buildFluids();fromDose();};
+$("amp-cnt").oninput=e=>{ampCnt=+e.target.value||1;syncAmpToTotal();fromDose();};
+$("amt-num").oninput=e=>{mixAmt=+e.target.value||0;ampEach=null;refreshAmpEq();fromDose();};
+$("vol-num").oninput=e=>{mixVol=+e.target.value||1;buildFluids();fromDose();};
+$("dose-in").oninput=fromDose;
+$("cc-in").oninput=fromCc;
+$("tip").innerHTML="<b>특수 사용 팁</b> · Vaso: 체중 1000kg로 두면 mcg/kg/min=U/min · Precedex/Sufental: 단위 mcg/kg/hr 사용 · Alfentanil: cc/hr 직접 입력";
+buildTabs();buildDrugs();selectDrug();
+
+/* ===== 신기능·항생제 ===== */
+let sex="M",mode="calc";
+function getCrCl(){if(mode==="egfr"){const v=+$("egfr").value;return v>=0?v:null;}const age=+$("age").value,wt=+$("r-wt").value,cr=+$("cr").value;if(!(age>0&&wt>0&&cr>0))return null;let v=((140-age)*wt)/(72*cr);if(sex==="F")v*=0.85;return Math.max(v,0);}
+function bandOf(v){if(v>=90)return"정상 (≥90)";if(v>=60)return"경도 저하 (60–89)";if(v>=30)return"중등도 저하 (30–59)";if(v>=15)return"고도 저하 (15–29)";return"신부전 (<15) — 투석 고려";}
+function refreshRenal(){const v=getCrCl();if(v==null){$("crcl").textContent="—";$("band").textContent="";renderTable(null);return;}$("crcl").textContent=v.toFixed(1);$("band").textContent=bandOf(v);renderTable(v);}
+function renderTable(crcl){
+  const sev=$("severity").value;const t=$("abx");
+  let html="<tr><th>약물</th><th>적응증</th><th>신기능별 용량</th></tr>";
+  let lastGrp="";
+  ABX.forEach(d=>{
+    if(d.grp!==lastGrp){html+="<tr class='grp'><td colspan='3'>"+d.grp+"</td></tr>";lastGrp=d.grp;}
+    const arr=sev==="severe"?d.severe:d.general;
+    const ilbl=sev==="severe"?d.sLbl:d.gLbl;
+    let cells;
+    if(d.noAdj){cells="<span class='noadj'>신기능 조절 불필요</span> <span style='font-size:12px;'>"+arr[0]+"</span>";}
+    else{cells="";d.cols.forEach((c,i)=>{let hit=false;if(crcl!=null&&d.cut[i]){const[lo,hi]=d.cut[i];if(crcl>=lo&&crcl<hi)hit=true;}cells+="<span class='chip"+(hit?" hit":"")+"'><span class='c'>"+c+":</span> "+arr[i]+"</span>";});}
+    html+="<tr><td class='drug'>"+d.n+"</td><td style='font-size:11px;color:var(--tx2);white-space:nowrap;'>"+ilbl+"</td><td>"+cells+"</td></tr>";
+  });
+  t.innerHTML=html;
+}
+$("sex").querySelectorAll("button").forEach(b=>b.onclick=()=>{sex=b.dataset.v;$("sex").querySelectorAll("button").forEach(x=>x.classList.remove("active"));b.classList.add("active");refreshRenal();});
+$("m-calc").onclick=()=>{mode="calc";$("m-calc").classList.add("active");$("m-egfr").classList.remove("active");$("panel-calc").style.display="";$("panel-egfr").style.display="none";$("res-lbl").textContent="추정 크레아티닌 청소율 (Cockcroft-Gault)";refreshRenal();};
+$("m-egfr").onclick=()=>{mode="egfr";$("m-egfr").classList.add("active");$("m-calc").classList.remove("active");$("panel-egfr").style.display="";$("panel-calc").style.display="none";$("res-lbl").textContent="입력한 eGFR / CrCl";refreshRenal();};
+["age","r-wt","cr","egfr"].forEach(id=>$(id).oninput=refreshRenal);
+$("severity").onchange=refreshRenal;
+refreshRenal();
+</script>
+</body>
+</html>
