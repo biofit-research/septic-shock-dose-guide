@@ -79,6 +79,8 @@
   .chip.hit{background:var(--info-bg);outline:2px solid var(--info-line);font-weight:600;}
   .chip .c{color:var(--tx2);}
   .noadj{display:inline-block;font-size:11px;padding:2px 8px;border-radius:6px;background:var(--ok-bg);color:var(--ok-tx);}
+  .tdm{display:inline-block;font-size:11px;padding:2px 8px;border-radius:6px;background:var(--warn-bg);color:var(--warn-tx);font-weight:600;margin-bottom:4px;}
+  tr.tdm-row td{background:linear-gradient(0deg,var(--warn-bg),transparent 60%);}
   .warn{background:var(--warn-bg);color:var(--warn-tx);border-radius:8px;padding:12px 14px;font-size:13px;margin:14px 0;}
   .disclaimer{font-size:12px;color:var(--tx2);margin-top:24px;padding-top:16px;border-top:.5px solid var(--line);}
   .refs{font-size:12px;color:var(--tx2);margin-top:10px;}
@@ -169,7 +171,7 @@
       <span style="font-size:12px;color:var(--tx2);">현재 신기능 구간이 파란색으로 강조됩니다.</span>
     </div>
     <div class="scroll"><table id="abx"></table></div>
-    <div class="warn"><b>Vancomycin·아미노글리코사이드(amikacin, gentamicin)</b>는 단순 CrCl 표가 아니라 혈중 농도 모니터링(TDM)·AUC 기반으로 용량을 정합니다. 약제팀/ID 협진으로 관리하세요.</div>
+    <div class="warn"><b>Vancomycin · Teicoplanin · Gentamicin</b>은 표에 초기 경험적 용량을 표시했으나, 실제로는 혈중 농도 모니터링(TDM)·AUC 기반으로 개별 조정하는 약입니다. 부하용량은 신기능과 무관하게 체중 기반으로 투여하고, 표의 유지용량은 첫 농도 측정 전까지의 출발점일 뿐입니다. 반드시 약제팀/감염내과 협진과 농도 측정으로 관리하세요. (amikacin 등 다른 아미노글리코사이드도 동일 원칙)</div>
     <p class="disclaimer">
       본 도구는 참고용입니다. 실제 처방은 기관 내규·약제팀·감염내과 협진과 최신 라벨을 확인하십시오. CrCl = [(140 − 나이) × 체중] ÷ (72 × Cr), 여성 ×0.85. 비만 시 보정체중 권장(본 계산기는 입력 체중 그대로 사용).
       <span class="refs"><br><b>항생제 용량 출처:</b> Stanford Health Care Antimicrobial Dosing Reference Guide, Antimicrobial Stewardship Program (ABX Subcommittee 승인 2026년 2월). <b>신기능 계산식:</b> Cockcroft DW, Gault MH. Nephron. 1976;16(1):31-41. "신기능 조절 불필요"는 주로 간/담즙 배설 약물에 해당.</span>
@@ -220,6 +222,9 @@ const ABX=[
   {grp:"기타", n:"Metronidazole",noAdj:true,gLbl:"혐기성",sLbl:"중증",general:["500mg q8h"],severe:["500mg q6–8h"]},
   {grp:"기타", n:"Clindamycin",noAdj:true,gLbl:"일반",sLbl:"중증",general:["600mg q8h"],severe:["900mg q8h"]},
   {grp:"기타", n:"Azithromycin",noAdj:true,gLbl:"일반",sLbl:"—",general:["500mg q24h"],severe:["500mg q24h"]},
+  {grp:"글리코펩타이드 (TDM)", n:"Vancomycin",tdm:true,load:"부하 25–30mg/kg(실체중) ×1, 신기능 무관",gLbl:"유지(목표 AUC 400–600 / 트로프 15–20)",sLbl:"유지(목표 AUC 400–600 / 트로프 15–20)",cols:[">90","50–90","20–49","<20","HD/CRRT"],cut:[[90,1e9],[50,90],[20,50],[0,20]],general:["15–20mg/kg q8–12h","15–20mg/kg q12h","15–20mg/kg q24h","15–20mg/kg q48h+","농도 보고 투여"],severe:["15–20mg/kg q8–12h","15–20mg/kg q12h","15–20mg/kg q24h","15–20mg/kg q48h+","농도 보고 투여"]},
+  {grp:"글리코펩타이드 (TDM)", n:"Teicoplanin",tdm:true,load:"부하 6–12mg/kg q12h ×3회, 신기능 무관 (4일째까지 정상 유지)",gLbl:"유지(목표 트로프 15–30, 5일째부터 조절)",sLbl:"유지(목표 트로프 15–30, 5일째부터 조절)",cols:[">60","30–60","<30","HD"],cut:[[60,1e9],[30,60],[0,30]],general:["6mg/kg q24h","6mg/kg q48h","6mg/kg q72h","6mg/kg 주1–2회"],severe:["12mg/kg q24h","12mg/kg q48h","12mg/kg q72h","12mg/kg 주1–2회"]},
+  {grp:"아미노글리코사이드 (TDM)", n:"Gentamicin",tdm:true,load:"1일1회 요법 5–7mg/kg(실/조정체중) ×1, 신기능 무관",gLbl:"유지(목표 트로프 <1, 농도로 간격 조절)",sLbl:"유지(목표 트로프 <1, 농도로 간격 조절)",cols:[">60","40–60","20–39","<20","HD"],cut:[[60,1e9],[40,60],[20,40],[0,20]],general:["5–7mg/kg q24h","5–7mg/kg q36h","5–7mg/kg q48h","농도 보고 투여","농도 보고 투여"],severe:["5–7mg/kg q24h","5–7mg/kg q36h","5–7mg/kg q48h","농도 보고 투여","농도 보고 투여"]},
   {grp:"항진균", n:"Fluconazole",gLbl:"식도/골관절 칸디다",sLbl:"중증 칸디다혈증 등",cols:[">50","≤50","HD"],cut:[[50,1e9],[0,50]],general:["400부하→200mg q24h","400부하→200mg q24h","200mg q24h(HD후)"],severe:["800부하→400–800mg q24h","800부하→200–400mg q24h","400–800mg post-HD"]},
 ];
 
@@ -279,8 +284,9 @@ function renderTable(crcl){
     const ilbl=sev==="severe"?d.sLbl:d.gLbl;
     let cells;
     if(d.noAdj){cells="<span class='noadj'>신기능 조절 불필요</span> <span style='font-size:12px;'>"+arr[0]+"</span>";}
-    else{cells="";d.cols.forEach((c,i)=>{let hit=false;if(crcl!=null&&d.cut[i]){const[lo,hi]=d.cut[i];if(crcl>=lo&&crcl<hi)hit=true;}cells+="<span class='chip"+(hit?" hit":"")+"'><span class='c'>"+c+":</span> "+arr[i]+"</span>";});}
-    html+="<tr><td class='drug'>"+d.n+"</td><td style='font-size:11px;color:var(--tx2);white-space:nowrap;'>"+ilbl+"</td><td>"+cells+"</td></tr>";
+    else{cells="";if(d.tdm){cells+="<div class='tdm'>TDM 필수 · 농도 측정 후 조정</div><div style='font-size:11px;color:var(--tx2);margin-bottom:6px;'>부하: "+d.load+"</div>";}d.cols.forEach((c,i)=>{let hit=false;if(crcl!=null&&d.cut[i]){const[lo,hi]=d.cut[i];if(crcl>=lo&&crcl<hi)hit=true;}cells+="<span class='chip"+(hit?" hit":"")+"'><span class='c'>"+c+":</span> "+arr[i]+"</span>";});}
+    const rowcls=d.tdm?" class='tdm-row'":"";
+    html+="<tr"+rowcls+"><td class='drug'>"+d.n+"</td><td style='font-size:11px;color:var(--tx2);white-space:nowrap;'>"+ilbl+"</td><td>"+cells+"</td></tr>";
   });
   t.innerHTML=html;
 }
